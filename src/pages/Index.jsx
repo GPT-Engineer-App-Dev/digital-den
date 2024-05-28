@@ -1,4 +1,4 @@
-import { Box, Container, VStack, HStack, Text, Image, Button, Flex, Link, Input } from "@chakra-ui/react";
+import { Box, Container, VStack, HStack, Text, Image, Button, Flex, Link, Input, Select } from "@chakra-ui/react";
 import { useState } from "react";
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 
@@ -8,31 +8,43 @@ const sampleProducts = [
     name: "Smartphone XYZ",
     price: "$699",
     image: "/images/smartphone.jpg",
+    category: "Electronics",
   },
   {
     id: 2,
     name: "Laptop ABC",
     price: "$999",
     image: "/images/laptop.jpg",
+    category: "Electronics",
   },
   {
     id: 3,
     name: "Wireless Headphones",
     price: "$199",
     image: "/images/headphones.jpg",
+    category: "Accessories",
   },
 ];
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  const categories = ["All", ...new Set(sampleProducts.map(product => product.category))];
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
+  };
+
   const filteredProducts = sampleProducts.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (selectedCategory === "All" || product.category === selectedCategory)
   );
+
   return (
     <Container maxW="container.xl" p={0}>
       <Box bg="gray.800" color="white" p={4}>
@@ -56,6 +68,11 @@ const Index = () => {
               onChange={handleSearchChange}
               mb={4}
             />
+            <Select placeholder="Select category" value={selectedCategory} onChange={handleCategoryChange} mb={4}>
+              {categories.map((category, index) => (
+                <option key={index} value={category}>{category}</option>
+              ))}
+            </Select>
           </Box>
           {filteredProducts.map((product) => (
             <Box key={product.id} borderWidth="1px" borderRadius="lg" overflow="hidden" w="100%">
